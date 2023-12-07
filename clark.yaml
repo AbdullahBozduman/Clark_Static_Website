@@ -18,7 +18,7 @@ Resources:
         Fn::Base64:
           #!/bin/bash
           sudo yum update -y
-          sudo yum install -y git httpd.x86_64 wget
+          sudo yum install -y git httpd wget
           wget -O /var/www/html/index.html https://raw.githubusercontent.com/AbdullahBozduman/Project_101/master/static-web/index.html
           wget -O /var/www/html/cat0.jpg https://github.com/AbdullahBozduman/Project_101/blob/88629bead21ed23cbcb804281123ede120e96e6e/static-web/cat0.jpg
           wget -O /var/www/html/cat1.jpg https://github.com/AbdullahBozduman/Project_101/blob/88629bead21ed23cbcb804281123ede120e96e6e/static-web/cat1.jpg
