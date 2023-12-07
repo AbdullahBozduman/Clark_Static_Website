@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Kittens Carousel
+  Static Website
+
+Parameters:
+  LatestAmiId:
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+
+Resources:
+  ClarkInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: t2.micro
+      UserData:
+        Fn::Base64:
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install -y git httpd.x86_64 wget
+          wget -O /var/www/html/index.html https://raw.githubusercontent.com/AbdullahBozduman/Project_101/master/static-web/index.html
+          sudo chmod -R 755 /var/www/html/
+          sudo chown -R apache:apache /var/www/html/
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+      KeyName: firstkey # Use your own keypair without .pem
+      SecurityGroups:
+        - !Ref ClarkSecGrp
+      Tags:
+        - Key: Name
+          Value: Web_Server_of_Stack_Name
+
+  ClarkSecGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Accessible via web browser from anywhere # Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
